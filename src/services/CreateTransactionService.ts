@@ -15,18 +15,18 @@ class CreateTransactionService {
   }
 
   public execute({ title, value, type }: Request): Transaction {
+    if (
+      this.transactionsRepository.getBalance().total - value < 0 &&
+      type === 'outcome'
+    ) {
+      throw Error('Not enough balance for outcome');
+    }
     const transaction = this.transactionsRepository.create({
       title,
       value,
       type,
     });
 
-    if (
-      this.transactionsRepository.getBalance().total - transaction.value <
-      0
-    ) {
-      throw Error('Not enough balance for outcome transaction');
-    }
     return transaction;
   }
 }

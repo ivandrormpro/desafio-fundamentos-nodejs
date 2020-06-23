@@ -10,6 +10,11 @@ interface Balance {
   total: number;
 }
 
+interface RTransaction {
+  transactions: Transaction[];
+  balance: Balance;
+}
+
 const transactionRouter = Router();
 
 const transactionsRepository = new TransactionsRepository();
@@ -19,10 +24,10 @@ transactionRouter.get('/', (request, response) => {
     const trans = transactionsRepository.all();
     const balance = transactionsRepository.getBalance();
 
-    const transactions: Array<Balance | Transaction[]> = [];
-
-    transactions.push(trans);
-    transactions.push(balance);
+    const transactions: RTransaction = {
+      transactions: trans,
+      balance,
+    };
 
     return response.json(transactions);
   } catch (err) {
